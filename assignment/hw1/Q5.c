@@ -17,17 +17,41 @@ char toLowerCase(char ch){
      return ch-'A'+'a';
 }
 
+int isUpperCase(char ch)
+{
+    return 'A'<=ch && ch<='Z';
+}
+
+int isLowerCase(char ch)
+{
+    return 'a'<=ch && ch<='z';
+}
+
 void studly(char* word){
      /*Convert to studly caps*/
+    int even = 1;
+	while (*word != '\0')
+	{   
+        if (even)
+        {
+            if (isLowerCase(*word)) *word = toUpperCase(*word);
+            even = 0;            
+        } else 
+        {
+            if (isUpperCase(*word)) *word = toLowerCase(*word);
+            even = 1;
+        }
+        word++;
+	}
 }
 
 int main(){
     /*Read word from the keyboard using scanf*/
     char str[100];
-    scanf("Please input a string: %s\n", )
+    scanf("%s", str);
     /*Call studly*/
-    
+    studly(str);
     /*Print the new word*/
-    
+    printf("%s\n", str);
     return 0;
 }
