@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <assert.h>
 
-struct DynArr DynArr
+struct DynArr
 {
 	TYPE *data;
 	int size;
 	int capacity;
+	int beg;
 };
 
 void _initDynArr(DynArr *v, int cap)
@@ -15,8 +16,10 @@ void _initDynArr(DynArr *v, int cap)
 	assert(cap > 0);
 	assert(v!=0);
 	v->data = malloc(sizeof(TYPE)*cap);
+	assert(v->data != 0);
 	v->size = 0;
 	v->capacity = cap;
+	v->beg = 0;
 }
 
 DynArr *createDynArr(int cap)
@@ -26,6 +29,7 @@ DynArr *createDynArr(int cap)
 	v = malloc(sizeof(DynArr));
 	assert(v != 0);
 	_initDynArr(v, cap);
+	return v;
 }
 
 void freeDynArr(DynArr *v)
@@ -38,6 +42,7 @@ void freeDynArr(DynArr *v)
 	}
 	v->size = 0;
 	v->capacity =0;
+	v->beg = 0;
 }
 
 void deleteDynArr(DynArr *v)
@@ -53,6 +58,15 @@ int sizeDynArr(DynArr *v)
 	return v->size;
 }
 
+int _absoluteId(DynArr *v, int id)
+{
+	if (v->beg < 0)
+	{
+		v->beg += v->capacity;
+	}
+	return (id+v->beg) % v->capacity;
+}
+
 void _setCapDynArr(DynArr *v, int newCap)
 {
 	TYPE *oldData = v->data;
@@ -61,7 +75,7 @@ void _setCapDynArr(DynArr *v, int newCap)
 
 	for (int i = 0; i < v->size; ++i)
 	{
-		v->data[i] = oldData[i];
+		v->data[i] = oldData[_absoluteId(v,i)];
 	}
 
 	v->size = oldSize;
@@ -75,7 +89,7 @@ void addDynArr(DynArr *v, TYPE val)
 	{
 		_setCapDynArr(v, 2*v->capacity);
 	}
-	v->data[v->size] = val;
+	v->data[_absoluteId(v,v->size)] = val;
 	v->size++;
 }
 
@@ -83,14 +97,14 @@ TYPE getDynArr(DynArr *v, int pos)
 {
 	assert(v != 0);
 	assert(pos>=0 && pos<v->size);
-	return v->data[pos];
+	return v->data[_absoluteId(v,pos)];
 }
 
 void putDynArr(DynArr *v, int pos, TYPE val)
 {
 	assert(v != 0);
 	assert(pos>=0 && pos<v->size);
-	v->data[pos] = val;
+	v->data[_absoluteId(v,pos)] = val;
 }
 
 void swapDynArr(DynArr *v, int i, int j)
@@ -99,6 +113,8 @@ void swapDynArr(DynArr *v, int i, int j)
 	assert(i>=0 && i<v->size);
 	assert(j>0 && j<v->size);
 	TYPE tem;
+	i = _absoluteId(v,i);
+	j = _absoluteId(v,j);
 	tem = v->data[i];
 	v->data[i] = v->data[j];
 	v->data[j] = tem;
@@ -111,22 +127,23 @@ void removeAtDynArr(DynArr *v, int idx)
 
 	while(idx<v->size-1)
 	{
-		v->data[idx] = v->data[idx+1];
+		v->data[_absoluteId(v,idx)] = v->data[_absoluteId(v,idx+1)];
 		idx++;
 	}
 	v->size--;
 }
 
+// Stack interface
 int isEmptyDynArr(DynArr *v)
 {
 	assert(v != 0);
-	return !v->size;
+	return !(v->size);
 }
 
 TYPE topDynArr(DynArr *v)
 {
 	assert(!isEmptyDynArr(v));
-	return v->data[v->size-1];
+	return v->data[_absoluteId(v,v->size-1)];
 }
 
 void pushDynArr(DynArr *v, TYPE val)
@@ -137,15 +154,84 @@ void pushDynArr(DynArr *v, TYPE val)
 void popDynArr(DynArr *v)
 {
 	assert(!isEmptyDynArr(v));
-	removeAtDynArr(v, v->size-1);
+	v->size--;
 }
 
 void printDynArr(DynArr *v);
 {
 	for (int i = 0; i < v->size; ++i)
 	{
-		printf("array[%d] = %d\n", i, v->data[i]);
+		printf("array[%d] = %d\n", i, v->data[_absoluteId(v,i)]);
 	}
+}
+
+// Bag interface
+int containsDynArr(DynArr *v, TYPE val)
+{
+	assert(v != 0);
+	assert(!isEmptyDynArr(v));
+
+	for (int i = 0; i < v->size; ++i)
+	{
+		if (v->data[_absoluteId(v,i)] == val) return 1;
+	}
+	return 0;
+}
+
+void removeDynArr(DynArr *v, TYPE val)
+{
+	assert(v != 0);
+	for (int i = 0; i < v->size; ++i)
+	{
+		if (v->data[_absoluteId(v,i)] == val)
+		{
+			removeAtDynArr(v,i);
+			break;
+		}
+	}
+}
+
+// Deque interface
+void addFrontDynArr(DynArr *v, TYPE val)
+{
+	assert(v != 0);
+	if (v->size >= v->capacity)
+	{
+		_setCapDynArr(v, 2*v->capacity);
+	}
+	v->beg = v->beg-1;
+	v->data[_absoluteId(v,0)] = val;
+	v->size++;
+}
+
+void removeFrontDynArr(DynArr *v)
+{
+	assert(v != 0);
+	v->beg++;
+	v->size--;
+}
+
+void addBackDynArr(DynArr *v, TYPE val)
+{
+	assert(v != 0);
+	addDynArr(v, val);
+}
+
+void removeBackDynArr(DynArr *v)
+{
+	assert(v != 0);
+	v->size--;	
+}
+
+TYPE frontDynArr(DynArr *v)
+{
+	assert(v->size >0);
+	return v->data[_absoluteId(v,0)];
+}
+
+TYPE backDynArr(DynArr *v)
+{
+	return v->data[_absoluteId(v,v->size-1)];
 }
 
 
