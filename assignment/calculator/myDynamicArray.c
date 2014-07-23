@@ -148,7 +148,71 @@ void printDynArr(DynArr *v);
 	}
 }
 
+int _binarySearch(TYPE *data, int size, TYPE val)
+{
+	int low = 0;
+	int high = size;
+	int mid;
+	while (low<high)
+	{
+		mid = (low+high)/2;
+		if (LT(data[mid], val))
+		{
+			low = mid + 1;
+		} else {
+			high = mid;
+		}
+	}
+	return low;
+}
 
+int binarySearchDynArr(DynArr *v, TYPE val)
+{
+	return _binarySearch(v->data, v->size, val);
+}
+
+void addAtDynArr(DynArr *v, int id, TYPE val)
+{
+	assert(id>=0 && id<=v->size);
+	if (v->size >= v->capacity)
+	{
+		_setCapDynArr(v, 2*v->capacity);
+	}
+	for (int i = v->size-1; i>=id; i--)
+	{
+		v->data[i+1] = v->data[i];
+	}
+	v->data[id] = val;
+}
+
+void addOrderedDynArr(DynArr *v, TYPE val)
+{
+	int id = binarySearchDynArr(v, val);
+	addAtDynArr(v, id, val);
+}
+
+int containOrderedDynArr(DynArr *v, TYPE val)
+{
+	int id = binarySearchDynArr(v, val);
+
+	if (id < v->size)
+	{
+		if (EQ(v->data[id], val))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void removeOrderedDynArr(DynArr *v, TYPE val)
+{
+	int id = binarySearchDynArr(v, val);
+	if (id<v->size && EQ(v->data[id], val))
+	{
+		removeAtDynArr(v, id);
+	}
+}
 
 
 

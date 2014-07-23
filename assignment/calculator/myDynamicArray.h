@@ -30,18 +30,21 @@ typedef struct DynArr DynArr;
 /* Dynamic Array Functions */
 DynArr *createDynArr(int cap);
 void deleteDynArr(DynArr *v);
-
 int sizeDynArr(DynArr *v);
-
 void addDynArr(DynArr *v, TYPE val);
 TYPE getDynArr(DynArr *v, int pos);
 void putDynArr(DynArr *v, int pos, TYPE val);
 void swapDynArr(DynArr *v, int i, int  j);
 void removeAtDynArr(DynArr *v, int idx);
+void addAtDynArr(DynArr *v, int id, TYPE val);
 void pushDynArr(DynArr *v, TYPE val);
 TYPE topDynArr(DynArr *v);
 void popDynArr(DynArr *v);
 int isEmptyDynArr(DynArr *v);
 void printDynArr(DynArr *v);
+int binarySearchDynArr(DynArr *v, TYPE val);
+void addOrderedDynArr(DynArr *v, TYPE val);
+int containOrderedDynArr(DynArr *v, TYPE val);
+void removeOrderedDynArr(DynArr *v, TYPE val);
 
 #endif
