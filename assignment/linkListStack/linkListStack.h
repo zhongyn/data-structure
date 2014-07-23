@@ -9,7 +9,8 @@ typedef struct link link;
 typedef struct linkListStack linkListStack;
 
 void linkListStackInit(linkListStack *s);
-void linkListStackFree(linkListStack *s);
+linkListStack *linkListStackCreate();
+void linkListStackDelete(linkListStack *s);
 void linkListStackPush(linkListStack *s, TYPE d);
 TYPE linkListStackTop(linkListStack *s);
 void linkListStackPop(linkListStack *s);

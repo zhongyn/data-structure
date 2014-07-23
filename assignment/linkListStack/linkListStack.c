@@ -19,19 +19,32 @@ void linkListStackInit(linkListStack *s)
 	s->firstLink = 0;
 }
 
-void linkListStackFree(linkListStack *s)
+linkListStack *linkListStackCreate()
+{
+	linkListStack *newList = malloc(sizeof(linkListStack));
+	linkListStackInit(newList);
+	return newList;
+}
+
+void _linkListStackFree(linkListStack *s)
 {
 	while(!linkListStackIsEmpty(s))
 		linkListStackPop(s);
+}
+
+void linkListStackDelete(linkListStack *s)
+{
+	_linkListStackFree(s);
+	free(s);
 }
 
 void linkListStackPush(linkListStack *s, TYPE d)
 {
 	link *newLink = (link*)malloc(sizeof(link));
 	assert(newLink != 0);
-	s->firstLink = newLink;
+	newLink->next = s->firstLink;
 	newLink->value = d;
-	newLink->next = 0;
+	s->firstLink = newLink;
 }
 
 TYPE linkListStackTop(linkListStack *s)
