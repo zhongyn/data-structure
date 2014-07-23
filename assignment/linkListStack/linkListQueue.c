@@ -45,6 +45,10 @@ void linkListQueueRemoveFront(linkListQueue *q)
 	assert(!linkListQueueIsEmpty(q));
 	link *tem = q->firstLink;
 	q->firstLink->next = tem->next;
+	if (q->firstLink->next == 0)
+	{
+		q->lastLink = q->firstLink;
+	}
 	free(tem);
 }
 
