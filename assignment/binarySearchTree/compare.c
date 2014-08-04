@@ -26,14 +26,26 @@
 int compare(TYPE left, TYPE right)
 {
     /*FIXME: write this*/
-	return 0;
+    struct data *data1;
+    struct data *data2;
+    data1 = (struct data *)left;
+    data2 = (struct data *)right;
 
+    if (data1->number < data2->number)
+    {
+    	return -1;
+    } else if (data1->number > data2->number){
+    	return 1;
+    }
+	return 0;
 }
 
 /*Define this function, type casting the value of void * to the desired type*/
 void print_type(TYPE curval)
 {
     /*FIXME: write this*/
+    struct data *da = (struct data *)curval;
+    printf("number: %d, name: %s\n", da->number, da->name);
 
 }
 
