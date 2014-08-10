@@ -191,7 +191,6 @@ void removeDynArr(DynArr *v, TYPE val)
 	}
 }
 
-<<<<<<< HEAD
 // Deque interface
 void addFrontDynArr(DynArr *v, TYPE val)
 {
@@ -235,7 +234,6 @@ TYPE backDynArr(DynArr *v)
 	return v->data[_absoluteId(v,v->size-1)];
 }
 
-=======
 int _binarySearch(TYPE *data, int size, TYPE val)
 {
 	int low = 0;
@@ -253,7 +251,6 @@ int _binarySearch(TYPE *data, int size, TYPE val)
 	}
 	return low;
 }
->>>>>>> 5247510f09a7a704168c072a4964e288425ceb5b
 
 int binarySearchDynArr(DynArr *v, TYPE val)
 {
