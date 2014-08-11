@@ -4,19 +4,8 @@
 
 
 # ifndef TYPE
-# define TYPE      int
-# define TYPE_SIZE sizeof(int)
+# define TYPE      void*
 # endif
-
-# ifndef LT
-# define LT(A, B) ((A) < (B))
-# endif
-
-# ifndef EQ
-# define EQ(A, B) ((A) == (B))
-# endif
-
-
 
 typedef struct dynArr dynArr;
 

@@ -2,7 +2,7 @@
 #define HEAP_H
 
 # ifndef TYPE
-# define TYPE int
+# define TYPE void*
 # endif
 
 int compare(TYPE left, TYPE right);
