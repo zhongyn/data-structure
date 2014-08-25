@@ -7,6 +7,15 @@
 # define TYPE      void*
 # endif
 
+
+struct dynArr
+{
+	TYPE *data;
+	int size;
+	int capacity;	
+	int beg;
+};
+
 typedef struct dynArr dynArr;
 
 //struct dynArr
@@ -31,9 +40,9 @@ TYPE topDynArr(dynArr *v);
 void popDynArr(dynArr *v);
 int isEmptyDynArr(dynArr *v);
 void printDynArr(dynArr *v);
-int binarySearchDynArr(dynArr *v, TYPE val);
-void addOrderedDynArr(dynArr *v, TYPE val);
-int containOrderedDynArr(dynArr *v, TYPE val);
-void removeOrderedDynArr(dynArr *v, TYPE val);
+// int binarySearchDynArr(dynArr *v, TYPE val);
+// void addOrderedDynArr(dynArr *v, TYPE val);
+// int containOrderedDynArr(dynArr *v, TYPE val);
+// void removeOrderedDynArr(dynArr *v, TYPE val);
 
 #endif

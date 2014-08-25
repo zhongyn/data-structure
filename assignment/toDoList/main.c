@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "todoList.h"
+#include "heap.h"
 #include "dynArr.h"
 #include "type.h"
 
@@ -28,10 +28,11 @@ char const filename[] = "todo.list";
 char getOption()
 {	
 	char opt;
-	printf("%sPlease enter your option\n", options);
+	printf("\nPlease enter your option:\n");
+	
 	while (TRUE)
 	{
-		scanf(%c, &opt);
+		scanf("%c", &opt);
 		if ((opt == 'l') || (opt == 's') || (opt == 'a') || (opt == 'g') || (opt == 'r') || (opt == 'p') || (opt == 'e'))
 			break;
 		else printf("Please enter an available option:\n");
@@ -41,58 +42,98 @@ char getOption()
 
 void loadTodoList(FILE *list, dynArr *todoHeap)
 {	
+	printf("in loadTodoList\n");
 	Task *tmp = createTask();
-	list = fopen(filename, 'r+');
+	list = fopen(filename, "r+");
 
 	if (list == 0)
 	{
-		list = fopen(filename, 'w');
+		list = fopen(filename, "w+");
 	}
-
+	printf("middle loadTodoList\n");
 	while (fscanf(list, "%s, %d", tmp->description, &(tmp->priority)) != EOF)
 	{
 		addDynArr(todoHeap, tmp);
 		Task *tmp = createTask();
 	}
+	printf("end loadTodoList\n");
 }
 
-void saveTodoList(FILE *list)
+void saveTodoList(FILE *list, dynArr *todoHeap)
 {
 	if (list == 0)
 	{
-		/* code */
+		printf("The todoList doesn't exist. Please load a todoList first.\n");
+		return;
+	}
+
+	for (int i = 0; i < sizeDynArr(todoHeap); ++i)
+	{
+		Task *tmp = getDynArr(todoHeap, i);
+		fprintf(list, "%s %d", tmp->description, tmp->priority);
+	}
+}
+
+void addTodoList(dynArr *todoHeap)
+{
+	Task *tmp = createTask();
+	printf("Please input description:\n");
+	scanf("%s", tmp->description);
+	printf("Please input priority:\n");
+	scanf("%d", &(tmp->priority));
+	heapAdd(todoHeap, tmp);
+	printf("success\n");
+
+}
+
+void getTodoList(dynArr *todoHeap)
+{
+	Task *tmp = heapGetFirst(todoHeap);
+	printf("%s\n", tmp->description);
+}
+
+void removeTodoList(dynArr *todoHeap)
+{
+	heapRemoveFirst(todoHeap);
+}
+
+void printTodoList(dynArr *todoHeap)
+{
+	for (int i = 0; i < sizeDynArr(todoHeap); ++i)
+	{
+		Task *tmp = getDynArr(todoHeap, i);
+		printf("%s\n", tmp->description);
 	}
 }
 
 int main(int argc, char *argv[])
 {
-	FILE *list;
-	dynArr *todoHeap = createDynArr(10);
+	FILE *list = 0;
+	struct dynArr *todoHeap = createDynArr(10);
 	char option;
 
 	while (TRUE)
 	{
 		option = getOption();
-
 		switch (option)
 		{
 			case 'l':
 				loadTodoList(list, todoHeap);
 				break;
 			case 's':
-				saveTodoList(list);
+				saveTodoList(list, todoHeap);
 				break;
 			case 'a':
-				addTodoList(list);
+				addTodoList(todoHeap);
 				break;
 			case 'g':
-				getTodoList(list);
+				getTodoList(todoHeap);
 				break;
 			case 'r':
-				removeTodoList(list);
+				removeTodoList(todoHeap);
 				break;
 			case 'p':
-				printTodoList(list);
+				printTodoList(todoHeap);
 				break;
 			case 'e':
 				exit(0);

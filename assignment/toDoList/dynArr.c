@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-struct dynArr
-{
-	TYPE *data;
-	int size;
-	int capacity;	
-	int beg;
-};
+// struct dynArr
+// {
+// 	TYPE *data;
+// 	int size;
+// 	int capacity;	
+// 	int beg;
+// };
 
 void _initDynArr(dynArr *v, int cap)
 {
@@ -111,7 +111,6 @@ void swapDynArr(dynArr *v, int i, int j)
 {
 	assert(v != 0);
 	assert(i>=0 && i<v->size);
-	assert(j>0 && j<v->size);
 	TYPE tem;
 	i = _absoluteId(v,i);
 	j = _absoluteId(v,j);
@@ -157,13 +156,13 @@ void popDynArr(dynArr *v)
 	v->size--;
 }
 
-void printDynArr(dynArr *v);
-{
-	for (int i = 0; i < v->size; ++i)
-	{
-		printf("array[%d] = %d\n", i, v->data[_absoluteId(v,i)]);
-	}
-}
+// void printDynArr(dynArr *v)
+// {
+// 	for (int i = 0; i < v->size; ++i)
+// 	{
+// 		printf("array[%d] = %d\n", i, v->data[_absoluteId(v,i)]);
+// 	}
+// }
 
 // Bag interface
 int containsDynArr(dynArr *v, TYPE val)
@@ -234,28 +233,28 @@ TYPE backDynArr(dynArr *v)
 	return v->data[_absoluteId(v,v->size-1)];
 }
 
-int _binarySearch(TYPE *data, int size, TYPE val)
-{
-	int low = 0;
-	int high = size;
-	int mid;
-	while (low<high)
-	{
-		mid = (low+high)/2;
-		if (LT(data[mid], val))
-		{
-			low = mid + 1;
-		} else {
-			high = mid;
-		}
-	}
-	return low;
-}
+// int _binarySearch(TYPE *data, int size, TYPE val)
+// {
+// 	int low = 0;
+// 	int high = size;
+// 	int mid;
+// 	while (low<high)
+// 	{
+// 		mid = (low+high)/2;
+// 		if (LT(data[mid], val))
+// 		{
+// 			low = mid + 1;
+// 		} else {
+// 			high = mid;
+// 		}
+// 	}
+// 	return low;
+// }
 
-int binarySearchDynArr(dynArr *v, TYPE val)
-{
-	return _binarySearch(v->data, v->size, val);
-}
+// int binarySearchDynArr(dynArr *v, TYPE val)
+// {
+// 	return _binarySearch(v->data, v->size, val);
+// }
 
 void addAtDynArr(dynArr *v, int id, TYPE val)
 {
@@ -271,34 +270,34 @@ void addAtDynArr(dynArr *v, int id, TYPE val)
 	v->data[id] = val;
 }
 
-void addOrderedDynArr(dynArr *v, TYPE val)
-{
-	int id = binarySearchDynArr(v, val);
-	addAtDynArr(v, id, val);
-}
+// void addOrderedDynArr(dynArr *v, TYPE val)
+// {
+// 	int id = binarySearchDynArr(v, val);
+// 	addAtDynArr(v, id, val);
+// }
 
-int containOrderedDynArr(dynArr *v, TYPE val)
-{
-	int id = binarySearchDynArr(v, val);
+// int containOrderedDynArr(dynArr *v, TYPE val)
+// {
+// 	int id = binarySearchDynArr(v, val);
 
-	if (id < v->size)
-	{
-		if (EQ(v->data[id], val))
-		{
-			return 1;
-		}
-	}
-	return 0;
-}
+// 	if (id < v->size)
+// 	{
+// 		if (EQ(v->data[id], val))
+// 		{
+// 			return 1;
+// 		}
+// 	}
+// 	return 0;
+// }
 
-void removeOrderedDynArr(dynArr *v, TYPE val)
-{
-	int id = binarySearchDynArr(v, val);
-	if (id<v->size && EQ(v->data[id], val))
-	{
-		removeAtDynArr(v, id);
-	}
-}
+// void removeOrderedDynArr(dynArr *v, TYPE val)
+// {
+// 	int id = binarySearchDynArr(v, val);
+// 	if (id<v->size && EQ(v->data[id], val))
+// 	{
+// 		removeAtDynArr(v, id);
+// 	}
+// }
 
 
 
