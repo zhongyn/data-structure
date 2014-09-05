@@ -102,5 +102,24 @@ void hashTableRemove(struct hashTable *ht, TYPE value)
 
 void resizeTable(struct hashTable *ht)
 {
-	
+	struct hashTable *newht;
+	int newsize = ht->size * 2;
+	struct hlink *tem, *last;
+	int hashIndex;
+
+	initHashTable(newht, newsize);
+
+	for (int i = 0; i < ht->size; ++i)
+	{
+		tmp = ht->table[i];
+		while (tmp != 0)
+		{
+			hashTableAdd(newht, tmp->value);
+			last = tmp;
+			tmp = tmp->next;
+			free(last);
+		}
+	}
+
+	ht = newht;
 }
