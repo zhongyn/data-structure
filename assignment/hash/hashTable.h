@@ -20,4 +20,5 @@ void hashTableAdd(struct hashTable *ht, TYPE newValue);
 int hashTableContains(struct hashTable *ht, TYPE value);
 void hashTableRemove(struct hashTable *ht, TYPE value);
 void resizeTable(struct hashTable *ht);
+
 #endif
