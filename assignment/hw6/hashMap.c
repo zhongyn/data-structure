@@ -86,18 +86,22 @@ void _setTableSize(struct hashMap * ht, int newTableSize, comparator keyCompare,
 {
 	/*write this*/			
   hashLink **oldTable = ht->table;
+  int oldSize = ht->tableSize;
+  hashLink *cur, *last;
   _initMap(ht, newTableSize);
-  void *k, *v;
 
-  while(hasNextMap(itr))
+  for (int i = 0; i < oldSize; ++i)
   {
-    k = nextMap(itr);
-    v = atMap(ht, k, keyCompare, hashFunc);
-    insertMap(newht, k, v, keyCompare, hashFunc);
+    cur = oldTable[i];
+    while(cur != 0)
+    {
+      insertMap(ht, cur->key, cur->value, keyCompare, hashFunc);
+      last = cur;
+      cur = cur->next;
+      free(last);
+    }
   }
-  // _freeMap(ht);
-  ht = newht;
-
+  free(oldTable);
 }
 
 /*

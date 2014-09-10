@@ -97,7 +97,7 @@ int main (int argc, const char * argv[]) {
     /*... concordance code goes here ...*/
     while(word != NULL)
     {
-    	insertMap(hashTable, word, v, myCompare, hash1);
+    	insertMap(hashTable, word, v, myCompare, hash2);
 		printf("success => %s\n", word);
 		// keyPrint((hashTable->table[0])->key);
     	word = getWord(fileptr);   	
@@ -115,9 +115,9 @@ int main (int argc, const char * argv[]) {
 	
 	printf("Deleting keys\n");
 	
-	removeKey(hashTable, "and", myCompare, hash1);
-	removeKey(hashTable, "me", myCompare, hash1);
-	removeKey(hashTable, "the", myCompare, hash1);
+	removeKey(hashTable, "and", myCompare, hash2);
+	removeKey(hashTable, "me", myCompare, hash2);
+	removeKey(hashTable, "the", myCompare, hash2);
 	printMap(hashTable, keyPrint, valPrint);
 		
 	deleteMap(hashTable);
