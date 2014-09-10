@@ -10,6 +10,7 @@ void keyPrint(void* k)
 {
   char *key = (char *)k;
   printf("%s", key);
+
 }
 
 
@@ -89,13 +90,23 @@ int main (int argc, const char * argv[]) {
 	timer = clock();
 	
 	hashTable = createMap(tableSize);	   
-	
+	fileptr = fopen(filename, "r+");
+	void *word = getWord(fileptr);
+	void *v = (void*)"a";
+
     /*... concordance code goes here ...*/
+    while(word != NULL)
+    {
+    	insertMap(hashTable, word, v, myCompare, hash1);
+		printf("success => %s\n", word);
+		// keyPrint((hashTable->table[0])->key);
+    	word = getWord(fileptr);   	
+    }
 		
 	/*... concordance code ends here ...*/
 
-	printMap(hashTable, keyPrint, valPrint);
 	timer = clock() - timer;
+	printMap(hashTable, keyPrint, valPrint);
 	printf("\nconcordance ran in %f seconds\n", (float)timer / (float)CLOCKS_PER_SEC);
 	printf("Table emptyBuckets = %d\n", emptyBuckets(hashTable));
 	printf("Table count = %d\n", size(hashTable));

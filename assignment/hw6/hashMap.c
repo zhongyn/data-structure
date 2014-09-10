@@ -50,8 +50,24 @@ hashMap *createMap(int tableSize) {
 void _freeMap (struct hashMap * ht)
 {  
 	/*write this*/	
+  printf("in freemap\n");
   assert(ht != 0);
-  while()	
+  int idx = 0;
+  hashLink *cur;
+
+  while(idx < ht->tableSize)
+  {
+    cur = ht->table[idx];
+    while(cur != 0) 
+    {
+      cur = cur->next;
+      free(cur->key);
+      // free(cur->value);
+      free(cur);
+    }
+    idx++;
+  }
+  free(ht->table);
 }
 
 /* Deallocate buckets and the hash map.*/
@@ -67,15 +83,20 @@ void deleteMap(hashMap *ht) {
 Resizes the hash table to be the size newTableSize 
 */
 void _setTableSize(struct hashMap * ht, int newTableSize, comparator keyCompare, hashFuncPtr hashFunc)
-
 {
 	/*write this*/			
-  hashMap *oldht = 
-  hashMap *newht = createMap(newTableSize);
-  struct mapItr *itr = createMapIterator(ht);
-  void *k;
+  hashLink **oldTable = ht->table;
+  _initMap(ht, newTableSize);
+  void *k, *v;
 
-
+  while(hasNextMap(itr))
+  {
+    k = nextMap(itr);
+    v = atMap(ht, k, keyCompare, hashFunc);
+    insertMap(newht, k, v, keyCompare, hashFunc);
+  }
+  // _freeMap(ht);
+  ht = newht;
 
 }
 
@@ -94,23 +115,29 @@ void _setTableSize(struct hashMap * ht, int newTableSize, comparator keyCompare,
 void insertMap (struct hashMap * ht, void* k, void* v, comparator keyCompare, hashFuncPtr hashFunc)
 {  
 	/*write this*/	
-  int idx = hashFunc(k);
-  hashLink *current = malloc(sizeof(hashlink));
+  int idx = hashFunc(k)%ht->tableSize;
+  if (idx < 0)
+  {
+    idx += ht->tableSize;
+  }
+
+  hashLink *current = malloc(sizeof(hashLink));
   assert(current != 0);
   current->key = k;
   current->value = v;
-  void *value = atMap(ht, k, keyCompare, hashFunc);
-  
-  if (value != NULL)
+
+  if (containsKey(ht, k, keyCompare, hashFunc))
   {
-    *value += 1;
-    return;
-  } else {
-    current->next = ht->table[idx];
-    ht->table[idx] = current;
+    
+  printf("%s\n", current->key);
+    removeKey(ht, k, keyCompare, hashFunc);
   }
 
-  if (tableLoad >= LOAD_FACTOR_THRESHOLD)
+   current->next = ht->table[idx];
+   ht->table[idx] = current; 
+   ht->count++;
+
+  if (tableLoad(ht) >= LOAD_FACTOR_THRESHOLD)
   {
     _setTableSize(ht, 2*ht->tableSize, keyCompare, hashFunc);
   }
@@ -127,7 +154,11 @@ void insertMap (struct hashMap * ht, void* k, void* v, comparator keyCompare, ha
 void* atMap (struct hashMap * ht, void* k, comparator keyCompare, hashFuncPtr hashFunc)
 { 
 	/*write this*/
-  int idx = hashFunc(k);
+  int idx = hashFunc(k)%ht->tableSize;
+  if (idx < 0)
+  {
+    idx += ht->tableSize;
+  }
   hashLink *current = ht->table[idx];
 
   while(current != 0)
@@ -148,11 +179,15 @@ void* atMap (struct hashMap * ht, void* k, comparator keyCompare, hashFuncPtr ha
 int containsKey (struct hashMap * ht, void* k, comparator keyCompare, hashFuncPtr hashFunc)
 {  
   /*write this*/
-  int idx = hashFunc(k);
+  int idx = hashFunc(k)%ht->tableSize;
+  if (idx < 0)
+  {
+    idx += ht->tableSize;
+  }
   hashLink *current = ht->table[idx];
   while(current != 0)
   {
-    if (keyCompare(k,current->key))
+    if ((*keyCompare)(k,current->key) == 0)
     {
       return 1;
     }
@@ -170,23 +205,28 @@ int containsKey (struct hashMap * ht, void* k, comparator keyCompare, hashFuncPt
 void removeKey (struct hashMap * ht, void* k, comparator keyCompare, hashFuncPtr hashFunc)
 {  
 	/*write this*/
-  int idx = hashFunc(k);
+  printf("in removekey\n");
+  int idx = hashFunc(k)%ht->tableSize;
+  if (idx < 0)
+  {
+    idx += ht->tableSize;
+  }
   hashLink *current = ht->table[idx];
-  hashlink *last = ht->table[idx];
+  hashLink *last = ht->table[idx];
 
   while(current != 0)
   {
-    if (keyCompare(k,current->key))
+    if ((*keyCompare)(k,current->key) == 0)
     {
-      if (current = ht->table[idx])
+      if (current == ht->table[idx])
       {
         ht->table[idx] = current->next;
       } else {
         last->next = current->next;
       }
       free(current->key);
-      free(current->value);
       free(current);
+      ht->count--;
       return;
     }
 
@@ -249,22 +289,30 @@ float tableLoad(struct hashMap *ht)
 /* print the hashMap */
  void printMap (struct hashMap * ht, keyPrinter kp, valPrinter vp)
 {
-        int i;
-        struct hashLink *temp;
-        for(i = 0;i < capacity(ht); i++){
-                temp = ht->table[i];
-                if(temp != 0) {
-                        printf("\nBucket Index %d -> ", i);
-                }
-                while(temp != 0){
-                        printf("Key:");
-                        (*kp)(temp->key);
-                        printf("| Value: ");
-                        (*vp)(temp->value);
-                        printf(" -> ");
-                        temp=temp->next;
-                }
-        }
+  int i;
+  struct hashLink *temp;
+
+  for(i = 0;i < capacity(ht); i++)
+  {
+    temp = ht->table[i];
+    if(temp != 0) {
+      printf("\nBucket Index %d -> ", i);
+  }
+
+    while(temp != 0)
+    {
+      printf("Key:");
+      (*kp)(temp->key);
+
+      printf("| Value: ");
+
+      (*vp)(temp->value);
+      printf(" -> ");
+      temp=temp->next;
+    }
+  }
+
+  printf("%d\n", i);
 }
 
 /* print the keys/values ..in linear form, no buckets */
