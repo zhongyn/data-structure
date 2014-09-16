@@ -129,11 +129,11 @@ void insertMap (struct hashMap * ht, void* k, void* v, comparator keyCompare, ha
   assert(current != 0);
   current->key = k;
   current->value = v;
+printf("in insertMap\n");
 
   if (containsKey(ht, k, keyCompare, hashFunc))
   {
-    
-  printf("%s\n", current->key);
+    // printf("%s\n", current->key);
     removeKey(ht, k, keyCompare, hashFunc);
   }
 

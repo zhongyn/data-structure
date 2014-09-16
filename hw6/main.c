@@ -92,14 +92,23 @@ int main (int argc, const char * argv[]) {
 	hashTable = createMap(tableSize);	   
 	fileptr = fopen(filename, "r+");
 	void *word = getWord(fileptr);
-	void *v = (void*)"a";
+	int initV = 1;
+	void *v;
 
     /*... concordance code goes here ...*/
     while(word != NULL)
     {
-    	insertMap(hashTable, word, v, myCompare, hash2);
+    	v = atMap(hashTable, word, myCompare, hash2);
+    	if (v != NULL)
+    	{
+    		(*(int*)v)++;
+    	} else {
+    		v = malloc(sizeof(int));
+    		v = (void *)&initV;
+    		insertMap(hashTable, word, v, myCompare, hash2);
 		printf("success => %s\n", word);
-		// keyPrint((hashTable->table[0])->key);
+    	}
+
     	word = getWord(fileptr);   	
     }
 		
